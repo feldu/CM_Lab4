@@ -1,10 +1,15 @@
-import io.*;
+package lab4;
+
+import lab4.io.*;
+import lab4.plot.Series;
+import lab4.table.Table;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import table.Table;
+import lab4.plot.Plot;
+
 
 import java.util.InputMismatchException;
-import java.util.Map;
+
 
 @Slf4j
 public class Main {
@@ -16,12 +21,7 @@ public class Main {
         configure(args);
         try {
             Table table = readTable();
-            //write table
-            System.err.println("x | y");
-            for (Map.Entry<Double, Double> entry : table.getMap().entrySet()) {
-                System.err.println(entry.getKey() + " | " +  entry.getValue());
-            }
-            //
+            paintPoints(table);
         } catch (InputMismatchException e) {
             log.error("Incorrect input type");
             System.err.println("Введённые данные некоректны");
@@ -32,6 +32,18 @@ public class Main {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    private static void paintPoints(Table table) {
+        Series series = new Series("Точки");
+        series.setXData(table.getXData());
+        series.setYData(table.getYData());
+        series.setHideLines(true);
+        //rofl
+        Series series2 = new Series("Линейная функция", x -> 1.4543 * x + 5.2911, table.getLeftBorder(), table.getRightBorder());
+        series2.setHidePoints(true);
+        Plot plot = new Plot("График", series, series2);
+        plot.save("lab4.lab4.plot.png");
     }
 
     private static Table readTable() {

@@ -1,6 +1,6 @@
-package io;
+package lab4.io;
 
-import table.Table;
+import lab4.table.Table;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -52,7 +52,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>lab2.Main</mainClass>
+                                    <mainClass>lab4.Main</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

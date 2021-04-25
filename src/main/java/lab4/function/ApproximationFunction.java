@@ -1,4 +1,4 @@
-package function;
+package lab4.function;
 
 import lombok.Getter;
 

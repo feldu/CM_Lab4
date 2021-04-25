@@ -1,4 +1,4 @@
-package io;
+package lab4.io;
 
 import lombok.SneakyThrows;
 

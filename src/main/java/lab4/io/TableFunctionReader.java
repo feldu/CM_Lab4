@@ -1,7 +1,7 @@
-package io;
+package lab4.io;
 
 
-import table.Table;
+import lab4.table.Table;
 
 public interface TableFunctionReader {
     Table readTable(int size);
