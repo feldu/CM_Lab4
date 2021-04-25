@@ -1,14 +1,16 @@
 package lab4;
 
 import lab4.io.*;
+import lab4.method.ApproximationMethod;
+import lab4.method.LinearApproximationMethod;
+import lab4.plot.Plot;
 import lab4.plot.Series;
 import lab4.table.Table;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import lab4.plot.Plot;
-
 
 import java.util.InputMismatchException;
+import java.util.function.Function;
 
 
 @Slf4j
@@ -21,7 +23,9 @@ public class Main {
         configure(args);
         try {
             Table table = readTable();
-            paintPoints(table);
+            ApproximationMethod method = new LinearApproximationMethod();
+            Function<Double, Double> linearFunction = method.getFunction(table);
+            paintPoints(table, linearFunction);
         } catch (InputMismatchException e) {
             log.error("Incorrect input type");
             System.err.println("Введённые данные некоректны");
@@ -34,17 +38,18 @@ public class Main {
         }
     }
 
-    private static void paintPoints(Table table) {
+    private static void paintPoints(Table table, Function<Double, Double> linearFunction) {
         Series series = new Series("Точки");
         series.setXData(table.getXData());
         series.setYData(table.getYData());
         series.setHideLines(true);
         //rofl
-        Series series2 = new Series("Линейная функция", x -> 1.4543 * x + 5.2911, table.getLeftBorder(), table.getRightBorder());
+        Series series2 = new Series("Линейная функция", linearFunction, table.getLeftBorder(), table.getRightBorder());
         series2.setHidePoints(true);
         Plot plot = new Plot("График", series, series2);
         plot.save("lab4.lab4.plot.png");
     }
+
 
     private static Table readTable() {
         int n = in.readIntWithMessage("Введите количество точек:");

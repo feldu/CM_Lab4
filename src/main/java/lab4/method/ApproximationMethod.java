@@ -2,8 +2,8 @@ package lab4.method;
 
 import lab4.table.Table;
 
-import java.util.List;
+import java.util.function.Function;
 
 public interface ApproximationMethod {
-    public List<Double> getCoefficients(Table table);
+    Function<Double, Double> getFunction(Table table);
 }
