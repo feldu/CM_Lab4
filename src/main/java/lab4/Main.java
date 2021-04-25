@@ -3,6 +3,7 @@ package lab4;
 import lab4.io.*;
 import lab4.method.ApproximationMethod;
 import lab4.method.LinearApproximationMethod;
+import lab4.method.ExponentialApproximationMethod;
 import lab4.method.SquareApproximationMethod;
 import lab4.plot.Plot;
 import lab4.plot.Series;
@@ -29,6 +30,9 @@ public class Main {
             method = new SquareApproximationMethod();
             Function<Double, Double> squareFunction = method.getFunction(table);
             paintPoints(table, linearFunction, squareFunction);
+            method = new ExponentialApproximationMethod();
+            Function<Double, Double> exponentialFunction = method.getFunction(table);
+            paintPoints(table, linearFunction, exponentialFunction);
         } catch (InputMismatchException e) {
             log.error("Incorrect input type");
             System.err.println("Введённые данные некоректны");
