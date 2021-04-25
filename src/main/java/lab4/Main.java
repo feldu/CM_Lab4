@@ -3,6 +3,7 @@ package lab4;
 import lab4.io.*;
 import lab4.method.ApproximationMethod;
 import lab4.method.LinearApproximationMethod;
+import lab4.method.SquareApproximationMethod;
 import lab4.plot.Plot;
 import lab4.plot.Series;
 import lab4.table.Table;
@@ -25,7 +26,9 @@ public class Main {
             Table table = readTable();
             ApproximationMethod method = new LinearApproximationMethod();
             Function<Double, Double> linearFunction = method.getFunction(table);
-            paintPoints(table, linearFunction);
+            method = new SquareApproximationMethod();
+            Function<Double, Double> squareFunction = method.getFunction(table);
+            paintPoints(table, linearFunction, squareFunction);
         } catch (InputMismatchException e) {
             log.error("Incorrect input type");
             System.err.println("Введённые данные некоректны");
@@ -38,7 +41,7 @@ public class Main {
         }
     }
 
-    private static void paintPoints(Table table, Function<Double, Double> linearFunction) {
+    private static void paintPoints(Table table, Function<Double, Double> linearFunction, Function<Double, Double> squareFunction) {
         Series series = new Series("Точки");
         series.setXData(table.getXData());
         series.setYData(table.getYData());
@@ -46,8 +49,10 @@ public class Main {
         //rofl
         Series series2 = new Series("Линейная функция", linearFunction, table.getLeftBorder(), table.getRightBorder());
         series2.setHidePoints(true);
-        Plot plot = new Plot("График", series, series2);
-        plot.save("lab4.lab4.plot.png");
+        Series series3 = new Series("Квадратичная функция", squareFunction, table.getLeftBorder(), table.getRightBorder());
+        series3.setHidePoints(true);
+        Plot plot = new Plot("График", series, series2, series3);
+        plot.save("plot.png");
     }
 
 
