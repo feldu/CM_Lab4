@@ -34,7 +34,7 @@ public class Plot {
 
     @SneakyThrows
     public void save(String filename) {
-        log.info("Saving lab4.lab4.plot");
+        log.info("Saving plot");
         BitmapEncoder.saveBitmap(chart, filename, BitmapEncoder.BitmapFormat.PNG);
         log.info("Plot saved as {}", filename);
     }
