@@ -19,13 +19,7 @@ public class LinearApproximationMethod implements lab4.method.ApproximationMetho
         table.getYData().forEach(y -> SY += y);
         table.getMap().forEach((x, y) -> SXY += x * y);
         log.info("SX={}, SXX={}, SY={}, SXY={}", SX, SXX, SY, SXY);
-        double[][] matrixA = new double[][]{
-                {SXX, SX},
-                {SX, n}};
-        double[] matrixB = new double[]{SXY, SY};
-        LinearSystem linearSystem = new LinearSystem(2, matrixA, matrixB);
-        LinearSystemSolver solver = new LinearSystemSolver();
-        solver.solve(linearSystem);
+        LinearSystem linearSystem = solveSystem(SX, SXX, SY, SXY, n);
         double a = linearSystem.getX()[0], b = linearSystem.getX()[1];
         log.info("a={}, b={}", a, b);
         log.info("f(x) = {}x + {}", a, b);
