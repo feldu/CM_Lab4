@@ -13,6 +13,10 @@ public class ExponentialApproximationMethod implements ApproximationMethod {
 
     @Override
     public Function<Double, Double> getFunction(Table table) {
+        SX = 0;
+        SXX = 0;
+        SLNY = 0;
+        SXLNY = 0;
         int n = table.getMap().size();
         table.getXData().forEach(x -> SX += x);
         table.getXData().forEach(x -> SXX += x * x);

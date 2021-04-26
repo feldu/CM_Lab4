@@ -13,6 +13,13 @@ public class SquareApproximationMethod implements ApproximationMethod {
 
     @Override
     public Function<Double, Double> getFunction(Table table) {
+        SX = 0;
+        SXX = 0;
+        SXXX = 0;
+        SXXXX = 0;
+        SY = 0;
+        SXY = 0;
+        SXXY = 0;
         int n = table.getMap().size();
         table.getXData().forEach(x -> SX += x);
         table.getXData().forEach(x -> SXX += x * x);
@@ -26,7 +33,7 @@ public class SquareApproximationMethod implements ApproximationMethod {
         double a = linearSystem.getX()[2], b = linearSystem.getX()[1], c = linearSystem.getX()[0];
         log.info("a={}, b={}, c={}", a, b, c);
         log.info("f(x) = {}x^2 + {}x + {}", a, b, c);
-        return x -> a*x*x + b*x + c;
+        return x -> a * x * x + b * x + c;
     }
 
     private LinearSystem solveSystem(int n) {

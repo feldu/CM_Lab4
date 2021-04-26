@@ -13,6 +13,10 @@ public class PowerApproximationMethod implements ApproximationMethod {
 
     @Override
     public Function<Double, Double> getFunction(Table table) {
+        SLNX = 0;
+        SLNXX = 0;
+        SLNY = 0;
+        SLNXY = 0;
         int n = table.getMap().size();
         table.getXData().forEach(x -> SLNX += Math.log(x));
         table.getXData().forEach(x -> SLNXX += Math.log(x) * Math.log(x));

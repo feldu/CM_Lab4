@@ -13,6 +13,10 @@ public class LinearApproximationMethod implements lab4.method.ApproximationMetho
 
     @Override
     public Function<Double, Double> getFunction(Table table) {
+        SX = 0;
+        SXX = 0;
+        SY = 0;
+        SXY = 0;
         int n = table.getMap().size();
         table.getXData().forEach(x -> SX += x);
         table.getXData().forEach(x -> SXX += x * x);
