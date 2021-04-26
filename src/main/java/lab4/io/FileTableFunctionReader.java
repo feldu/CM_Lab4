@@ -18,7 +18,6 @@ public class FileTableFunctionReader implements TableFunctionReader {
         lines = Files.readAllLines(Paths.get(FILE_NAME), StandardCharsets.UTF_8);
     }
 
-    //todo: it
     @Override
     public Table readTable(int size) {
         SortedMap<Double, Double> tableMap = new TreeMap<>();

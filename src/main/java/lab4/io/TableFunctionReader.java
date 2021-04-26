@@ -6,10 +6,6 @@ import lab4.table.Table;
 public interface TableFunctionReader {
     Table readTable(int size);
 
-
-
-
-
     int readInt();
 
     int readIntWithMessage(String message);
