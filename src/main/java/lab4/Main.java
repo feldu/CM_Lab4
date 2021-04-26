@@ -33,6 +33,9 @@ public class Main {
             method = new LogarithmicallyApproximationMethod();
             Function<Double, Double> logarithmicallyFunction = method.getFunction(table);
             paintPoints(table, linearFunction, logarithmicallyFunction);
+            method = new PowerApproximationMethod();
+            Function<Double, Double> powerFunction = method.getFunction(table);
+            paintPoints(table, linearFunction, powerFunction);
         } catch (InputMismatchException e) {
             log.error("Incorrect input type");
             System.err.println("Введённые данные некоректны");
