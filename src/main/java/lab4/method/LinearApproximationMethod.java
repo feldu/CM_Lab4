@@ -1,10 +1,10 @@
 package lab4.method;
 
 import lab4.matrix.LinearSystem;
-import lab4.matrix.LinearSystemSolver;
 import lab4.table.Table;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.OptionalDouble;
 import java.util.function.Function;
 
 @Slf4j
@@ -24,6 +24,19 @@ public class LinearApproximationMethod implements lab4.method.ApproximationMetho
         log.info("a={}, b={}", a, b);
         log.info("f(x) = {}x + {}", a, b);
         return x -> (a * x + b);
+    }
+
+    public double findCorrelationCoefficient(Table table) {
+        OptionalDouble val = table.getXData().stream().mapToDouble(x -> x).average();
+        double avgX = val.isPresent() ? val.getAsDouble() : 0;
+        val = table.getYData().stream().mapToDouble(x -> x).average();
+        double avgY = val.isPresent() ? val.getAsDouble() : 0;
+        log.info("avgX={}, avgY={}", avgX, avgY);
+        final double[] crutch = {0, 0, 0};
+        table.getMap().forEach((x, y) -> crutch[0] += (x - avgX) * (y - avgY));
+        table.getMap().forEach((x, y) -> crutch[1] += Math.pow((x - avgX), 2));
+        table.getMap().forEach((x, y) -> crutch[2] += Math.pow((y - avgY), 2));
+        return crutch[0] / Math.sqrt(crutch[1] * crutch[2]);
     }
 
 }

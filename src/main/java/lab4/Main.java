@@ -36,6 +36,11 @@ public class Main {
                 try {
                     ApproximationMethod method = entry.getValue();
                     Function<Double, Double> function = method.getFunction(table);
+                    if (method.getClass().equals(LinearApproximationMethod.class)) {
+                        double corrCoefficient = ((LinearApproximationMethod) method).findCorrelationCoefficient(table);
+                        log.info("Correlation coefficient: {}", corrCoefficient);
+                        out.printInfo("Коэффициент корреляции: " + corrCoefficient);
+                    }
                     double rms = RMS.findRMS(table, function);
                     log.info("rms={}", rms);
                     out.printInfo("СКО для " + name + " функции: " + rms);
