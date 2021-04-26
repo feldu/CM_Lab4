@@ -1,5 +1,6 @@
 package lab4;
 
+import lab4.exception.IncorrectFunctionValueException;
 import lab4.io.*;
 import lab4.method.*;
 import lab4.plot.Plot;
@@ -32,16 +33,22 @@ public class Main {
             double minRMS = Double.MAX_VALUE;
             for (Map.Entry<String, ApproximationMethod> entry : methods.entrySet()) {
                 String name = entry.getKey();
-                ApproximationMethod method = entry.getValue();
-                Function<Double, Double> function = method.getFunction(table);
-                double rms = RMS.findRMS(table, function);
-                log.info("rms={}", rms);
-                out.printInfo("СКО для " + name + " функции: " + rms);
-                if (rms < minRMS) {
-                    minRMS = rms;
-                    bestFunctionName = name;
+                try {
+                    ApproximationMethod method = entry.getValue();
+                    Function<Double, Double> function = method.getFunction(table);
+                    double rms = RMS.findRMS(table, function);
+                    log.info("rms={}", rms);
+                    out.printInfo("СКО для " + name + " функции: " + rms);
+                    if (rms < minRMS) {
+                        minRMS = rms;
+                        bestFunctionName = name;
+                    }
+                    addSeriesToChart(table, plot, name, function);
+                } catch (IncorrectFunctionValueException e) {
+                    log.error("Can't add series {} to chart. Invalid data interval\n{}", name, e.getMessage());
+                    out.printError("Не удалось построить график " + name);
+                    out.printError(e.getMessage());
                 }
-                addSeriesToChart(table, plot, name, function);
             }
             log.info("Minimal RMS has {} function: {}", bestFunctionName, minRMS);
             out.printInfo("Минимальное СКО у " + bestFunctionName + " функции: " + minRMS);
@@ -54,13 +61,13 @@ public class Main {
             bestPlot.save("best_plot.png");
         } catch (InputMismatchException e) {
             log.error("Incorrect input type");
-            System.err.println("Введённые данные некоректны");
+            out.printError("Введённые данные некоректны");
         } catch (NumberFormatException e) {
             log.error("Incorrect input type");
-            System.err.println("Введённые данные некоректны");
-            System.err.println(e.getMessage());
+            out.printError("Введённые данные некоректны");
+            out.printError(e.getMessage());
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            out.printError(e.getMessage());
         }
     }
 

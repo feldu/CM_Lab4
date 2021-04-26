@@ -21,4 +21,9 @@ public class FileTableFunctionWriter implements TableFunctionWriter {
     public void printInfo(String s) {
         Files.write(FILE_NAME, Collections.singleton(s), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
+
+    @Override
+    public void printError(String s) {
+        printInfo("Error: " + s);
+    }
 }

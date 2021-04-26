@@ -7,4 +7,9 @@ public class ConsoleTableFunctionWriter implements TableFunctionWriter {
         System.out.println(s);
     }
 
+    @Override
+    public void printError(String s) {
+        System.err.println(s);
+    }
+
 }

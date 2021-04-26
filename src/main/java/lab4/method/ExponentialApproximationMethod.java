@@ -1,5 +1,6 @@
 package lab4.method;
 
+import lab4.exception.IncorrectFunctionValueException;
 import lab4.matrix.LinearSystem;
 import lab4.table.Table;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ public class ExponentialApproximationMethod implements ApproximationMethod {
         table.getXData().forEach(x -> SXX += x * x);
         table.getYData().forEach(y -> SLNY += Math.log(y));
         table.getMap().forEach((x, y) -> SXLNY += x * Math.log(y));
+        if (Double.isNaN(SX + SXX + SLNY + SXLNY)) throw new IncorrectFunctionValueException("Невозможно посчитать значения логарифма, аппроксимация экспонентой не допустима для данного набора точек");
         log.info("SX={}, SXX={}, SLNY={}, SXLNY={}", SX, SXX, SLNY, SXLNY);
         LinearSystem linearSystem = solveSystem(SX, SXX, SLNY, SXLNY, n);
         double a = Math.exp(linearSystem.getX()[1]), b = linearSystem.getX()[0];
