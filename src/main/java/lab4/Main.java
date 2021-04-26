@@ -9,6 +9,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.InputMismatchException;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 
 
@@ -17,25 +19,27 @@ public class Main {
     private static final String commandFormat = "CM_Lab4 [-i file_path] [-o file_path]";
     private static TableFunctionReader in;
     private static TableFunctionWriter out;
+    private static SortedMap<String, ApproximationMethod> methods;
 
     public static void main(String[] args) {
+        addMethodsToMap();
         configure(args);
         try {
             Table table = readTable();
-            ApproximationMethod method = new LinearApproximationMethod();
-            Function<Double, Double> linearFunction = method.getFunction(table);
-            method = new SquareApproximationMethod();
-            Function<Double, Double> squareFunction = method.getFunction(table);
-            paintPoints(table, linearFunction, squareFunction);
-            method = new ExponentialApproximationMethod();
-            Function<Double, Double> exponentialFunction = method.getFunction(table);
-            paintPoints(table, linearFunction, exponentialFunction);
-            method = new LogarithmicallyApproximationMethod();
-            Function<Double, Double> logarithmicallyFunction = method.getFunction(table);
-            paintPoints(table, linearFunction, logarithmicallyFunction);
-            method = new PowerApproximationMethod();
-            Function<Double, Double> powerFunction = method.getFunction(table);
-            paintPoints(table, linearFunction, powerFunction);
+
+            Plot plot = new Plot("Plot");
+            methods.forEach((name, method) -> {
+                Function<Double, Double> function = method.getFunction(table);
+                Series currentSeries = new Series(name, function, table.getLeftBorder(), table.getRightBorder());
+                currentSeries.setHidePoints(true);
+                plot.addSeries(currentSeries);
+            });
+            Series inputPoints = new Series("Input points");
+            inputPoints.setXData(table.getXData());
+            inputPoints.setYData(table.getYData());
+            inputPoints.setHideLines(true);
+            plot.addSeries(inputPoints);
+            plot.save("plot.png");
         } catch (InputMismatchException e) {
             log.error("Incorrect input type");
             System.err.println("Введённые данные некоректны");
@@ -48,18 +52,13 @@ public class Main {
         }
     }
 
-    private static void paintPoints(Table table, Function<Double, Double> linearFunction, Function<Double, Double> squareFunction) {
-        Series series = new Series("Точки");
-        series.setXData(table.getXData());
-        series.setYData(table.getYData());
-        series.setHideLines(true);
-        //rofl
-        Series series2 = new Series("Линейная функция", linearFunction, table.getLeftBorder(), table.getRightBorder());
-        series2.setHidePoints(true);
-        Series series3 = new Series("Квадратичная функция", squareFunction, table.getLeftBorder(), table.getRightBorder());
-        series3.setHidePoints(true);
-        Plot plot = new Plot("График", series, series2, series3);
-        plot.save("plot.png");
+    private static void addMethodsToMap() {
+        methods = new TreeMap<>();
+        methods.put("Linear", new LinearApproximationMethod());
+        methods.put("Square", new SquareApproximationMethod());
+        methods.put("Power", new PowerApproximationMethod());
+        methods.put("Exponential", new ExponentialApproximationMethod());
+        methods.put("Logarithmically", new LogarithmicallyApproximationMethod());
     }
 
 
