@@ -18,18 +18,37 @@ import static java.util.Arrays.*;
 @Slf4j
 public class Plot {
     private XYChart chart;
+    private List<Series> seriesList;
+
+    public Plot(String plotName) {
+        seriesList = new ArrayList<>();
+        createChart(plotName);
+    }
 
     public Plot(String plotName, Series... seriesArray) {
-        List<Series> series = new ArrayList<>(asList(seriesArray));
+        seriesList = new ArrayList<>(asList(seriesArray));
+        createChart(plotName);
+        for (Series item : seriesList) {
+            addSeriesToChart(item);
+        }
+    }
+
+    private void createChart(String plotName) {
         chart = new XYChartBuilder().theme(Styler.ChartTheme.Matlab) //.width(100).height(600)
                 .title(plotName).xAxisTitle("X").yAxisTitle("Y")
                 .build();
         chart.setCustomXAxisTickLabelsFormatter((x) -> String.format("%.2f", x));
-        for (Series item : series) {
-            XYSeries xySeries = chart.addSeries(item.getSeriesName(), item.getXData(), item.getYData());
-            if (item.isHideLines()) xySeries.setLineStyle(SeriesLines.NONE);
-            if (item.isHidePoints()) xySeries.setMarker(SeriesMarkers.NONE);
-        }
+    }
+
+    public void addSeries(Series series) {
+        seriesList.add(series);
+        addSeriesToChart(series);
+    }
+
+    private void addSeriesToChart(Series item) {
+        XYSeries xySeries = chart.addSeries(item.getSeriesName(), item.getXData(), item.getYData());
+        if (item.isHideLines()) xySeries.setLineStyle(SeriesLines.NONE);
+        if (item.isHidePoints()) xySeries.setMarker(SeriesMarkers.NONE);
     }
 
     @SneakyThrows
