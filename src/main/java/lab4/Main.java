@@ -4,13 +4,14 @@ import lab4.io.*;
 import lab4.method.*;
 import lab4.plot.Plot;
 import lab4.plot.Series;
+import lab4.rms.RMS;
 import lab4.table.Table;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.InputMismatchException;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.Map;
 import java.util.function.Function;
 
 
@@ -19,27 +20,38 @@ public class Main {
     private static final String commandFormat = "CM_Lab4 [-i file_path] [-o file_path]";
     private static TableFunctionReader in;
     private static TableFunctionWriter out;
-    private static SortedMap<String, ApproximationMethod> methods;
+    private static Map<String, ApproximationMethod> methods;
 
     public static void main(String[] args) {
         addMethodsToMap();
         configure(args);
         try {
             Table table = readTable();
-
             Plot plot = new Plot("Plot");
-            methods.forEach((name, method) -> {
+            String bestFunctionName = "suck dick";
+            double minRMS = Double.MAX_VALUE;
+            for (Map.Entry<String, ApproximationMethod> entry : methods.entrySet()) {
+                String name = entry.getKey();
+                ApproximationMethod method = entry.getValue();
                 Function<Double, Double> function = method.getFunction(table);
-                Series currentSeries = new Series(name, function, table.getLeftBorder(), table.getRightBorder());
-                currentSeries.setHidePoints(true);
-                plot.addSeries(currentSeries);
-            });
-            Series inputPoints = new Series("Input points");
-            inputPoints.setXData(table.getXData());
-            inputPoints.setYData(table.getYData());
-            inputPoints.setHideLines(true);
-            plot.addSeries(inputPoints);
+                double rms = RMS.findRMS(table, function);
+                log.info("rms={}", rms);
+                out.printInfo("СКО для " + name + " функции: " + rms);
+                if (rms < minRMS) {
+                    minRMS = rms;
+                    bestFunctionName = name;
+                }
+                addSeriesToChart(table, plot, name, function);
+            }
+            log.info("Minimal RMS has {} function: {}", bestFunctionName, minRMS);
+            out.printInfo("Минимальное СКО у " + bestFunctionName + " функции: " + minRMS);
+            Series inputPoints = addInputPointsToChart(table, plot);
+            //save general plot
             plot.save("plot.png");
+            Series bestSeries = new Series(bestFunctionName, methods.get(bestFunctionName).getFunction(table), table.getLeftBorder(), table.getRightBorder());
+            bestSeries.setHidePoints(true);
+            Plot bestPlot = new Plot("Best approximation", inputPoints, bestSeries);
+            bestPlot.save("best_plot.png");
         } catch (InputMismatchException e) {
             log.error("Incorrect input type");
             System.err.println("Введённые данные некоректны");
@@ -52,8 +64,23 @@ public class Main {
         }
     }
 
+    private static void addSeriesToChart(Table table, Plot plot, String name, Function<Double, Double> function) {
+        Series currentSeries = new Series(name, function, table.getLeftBorder(), table.getRightBorder());
+        currentSeries.setHidePoints(true);
+        plot.addSeries(currentSeries);
+    }
+
+    private static Series addInputPointsToChart(Table table, Plot plot) {
+        Series inputPoints = new Series("Input points");
+        inputPoints.setXData(table.getXData());
+        inputPoints.setYData(table.getYData());
+        inputPoints.setHideLines(true);
+        plot.addSeries(inputPoints);
+        return inputPoints;
+    }
+
     private static void addMethodsToMap() {
-        methods = new TreeMap<>();
+        methods = new HashMap<>();
         methods.put("Linear", new LinearApproximationMethod());
         methods.put("Square", new SquareApproximationMethod());
         methods.put("Power", new PowerApproximationMethod());
