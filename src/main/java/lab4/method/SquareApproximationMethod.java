@@ -1,5 +1,6 @@
 package lab4.method;
 
+import lab4.exception.IncorrectFunctionValueException;
 import lab4.matrix.LinearSystem;
 import lab4.matrix.LinearSystemSolver;
 import lab4.table.Table;
@@ -44,7 +45,11 @@ public class SquareApproximationMethod implements ApproximationMethod {
         double[] matrixB = new double[]{SY, SXY, SXXY};
         LinearSystem linearSystem = new LinearSystem(3, matrixA, matrixB);
         LinearSystemSolver solver = new LinearSystemSolver();
-        solver.solve(linearSystem);
+        try {
+            solver.solve(linearSystem);
+        } catch (Exception e) {
+            throw new IncorrectFunctionValueException("Невозможно посчитать коэффициенты квадритичной функции");
+        }
         return linearSystem;
     }
 }
